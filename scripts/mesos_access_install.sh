@@ -42,10 +42,10 @@ service docker start
 # start external haproxy
 docker kill haproxy-external &>/dev/null
 docker rm haproxy-external &>/dev/null
-docker run --name haproxy-external --privileged -d -e PORTS=1000 --net=host mesosphere/marathon-lb sse -m http://$FIRST_MASTER_IP:8080 --group "*"
+docker run --name haproxy-external --privileged -d -e PORTS=1000 --net=host mesosphere/marathon-lb sse -m http://$FIRST_MASTER_IP:8080 --group "ext" --dont-bind-http-https
 
 # Access Container:
-# docker exec -t -i c1bc6f04b465 /bin/bash
+# docker exec -t -i haproxy-external /bin/bash
 
 # Get some stats:
 # apt-get update
