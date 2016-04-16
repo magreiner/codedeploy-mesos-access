@@ -2,6 +2,9 @@ version: 0.0
 os: linux
 hooks:
   AfterInstall:
-    - location: scripts/mesos_access_install.sh
+    - location: scripts/docker_install.sh
+      timeout: 300
+      runas: root
+    - location: scripts/haproxy-external.sh
       timeout: 300
       runas: root
