@@ -5,6 +5,9 @@ hooks:
     - location: scripts/docker_install.sh
       timeout: 300
       runas: root
+    - location: scripts/dns-services.sh
+      timeout: 300
+      runas: root
     - location: scripts/haproxy-external.sh
       timeout: 300
       runas: root
