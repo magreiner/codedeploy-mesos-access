@@ -1,5 +1,14 @@
 #!/bin/bash
 
+MASTER_INSTANCE_TAGNAME="AS_Master"
+
+LOCAL_IP_ADDRESS="$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)"
+AZ="$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)"
+REGION="${AZ::-1}"
+
+MASTER_IPS="$(aws ec2 describe-instances --region $REGION --filters "Name=tag:Name,Values=$MASTER_INSTANCE_TAGNAME" --query 'Reservations[*].Instances[*].NetworkInterfaces[*].PrivateIpAddress' --output text)"
+FIRST_MASTER_IP="$(echo "$MASTER_IPS" | head -n1)"
+
 # start external haproxy
 docker kill haproxy-external &>/dev/null
 docker rm haproxy-external &>/dev/null
@@ -8,7 +17,7 @@ docker run --name haproxy-external \
            -d \
            -e PORTS=1000 \
            --net=host mesosphere/marathon-lb sse \
-           -m http://leader.mesos:8080 \
+           -m http://$FIRST_MASTER_IP:8080 \
            --dont-bind-http-https \
            --group "ext"
 
